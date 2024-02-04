@@ -315,7 +315,7 @@ class SplunkBackend(TextQueryBackend):
         return queries
 
     def finalize_query_aggregation(self, rule: SigmaRule, query: str, index: int, state: ConversionState ) -> str:
-        table_fields = " | stats values(*) as * by " + ",".join(rule.fields) if rule.fields else ""
+        table_fields = " | stats count values(*) as * by " + ",".join(rule.fields) if rule.fields else ""
         return query + table_fields
 
     def finalize_output_aggregation(self, queries: List[str]) -> List[str]:
