@@ -50,6 +50,7 @@ class SplunkBackend(TextQueryBackend):
             "default": "Plain SPL queries",
             "savedsearches": "Plain SPL in a savedsearches.conf file",
             "data_model": "Data model queries with tstats",
+            "aggregation": "Custom SPL with aggregation",
         }
     )
     requires_pipeline: ClassVar[bool] = (
@@ -311,4 +312,11 @@ class SplunkBackend(TextQueryBackend):
         )
 
     def finalize_output_data_model(self, queries: List[str]) -> List[str]:
+        return queries
+
+    def finalize_query_aggregation(self, rule: SigmaRule, query: str, index: int, state: ConversionState ) -> str:
+        table_fields = " | stats values(*) as * by " + ",".join(rule.fields) if rule.fields else ""
+        return query + table_fields
+
+    def finalize_output_aggregation(self, queries: List[str]) -> List[str]:
         return queries
